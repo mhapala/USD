@@ -82,6 +82,16 @@ public:
         return names;
     }
 
+    /// Return a vector of names of all pre-declared relationships for this schema
+    /// class and all its ancestor classes.  Does not include relationships that
+    /// may be authored by custom/extended methods of the schemas involved.
+    static const TfTokenVector &
+    GetSchemaRelationshipNames(bool includeInherited=true) {
+        /* This only exists for consistency */
+        static TfTokenVector names;
+        return names;
+    }
+
     /// Return a UsdTyped holding the prim adhering to this schema at \p path
     /// on \p stage.  If no prim exists at \p path on \p stage, or if the prim
     /// at that path does not adhere to this schema, return an invalid schema

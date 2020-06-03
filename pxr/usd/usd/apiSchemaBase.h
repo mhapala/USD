@@ -150,6 +150,13 @@ public:
     static const TfTokenVector &
     GetSchemaAttributeNames(bool includeInherited=true);
 
+    /// Return a vector of names of all pre-declared relationship for this schema
+    /// class and all its ancestor classes.  Does not include relationship that
+    /// may be authored by custom/extended methods of the schemas involved.
+    USD_API
+    static const TfTokenVector &
+    GetSchemaRelationshipNames(bool includeInherited=true);
+
 
 protected:
     /// Returns the type of schema this class belongs to.

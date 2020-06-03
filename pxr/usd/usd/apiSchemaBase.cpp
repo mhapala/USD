@@ -86,6 +86,19 @@ UsdAPISchemaBase::GetSchemaAttributeNames(bool includeInherited)
         return localNames;
 }
 
+const TfTokenVector&
+UsdAPISchemaBase::GetSchemaRelationshipNames(bool includeInherited)
+{
+    static TfTokenVector localNames;
+    static TfTokenVector allNames =
+        UsdSchemaBase::GetSchemaRelationshipNames(true);
+
+    if (includeInherited)
+        return allNames;
+    else
+        return localNames;
+}
+
 PXR_NAMESPACE_CLOSE_SCOPE
 
 // ===================================================================== //

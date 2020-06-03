@@ -130,6 +130,30 @@ public:
     {% endif -%}
     virtual ~{{ cls.cppClassName }}() {%- if cls.isAPISchemaBase %} = 0{% endif %};
 
+{% if cls.relOrder|length > 0 %}
+{% if cls.isMultipleApply %}
+    /// Return a vector of names of all pre-declared relationships for this schema
+    /// class and all its ancestor classes for a given instance name.  Does not
+    /// include relationships that may be authored by custom/extended methods of
+    /// the schemas involved. The names returned will have the proper namespace
+    /// prefix.
+{% else %}
+    /// Return a vector of names of all pre-declared relationships for this schema
+    /// class and all its ancestor classes.  Does not include relationships that
+    /// may be authored by custom/extended methods of the schemas involved.
+{% endif %}
+    {% if useExportAPI -%}
+    {{ Upper(libraryName) }}_API
+    {% endif -%}
+    static const TfTokenVector &
+{% if cls.isMultipleApply %}
+    GetSchemaRelationshipNames(
+        bool includeInherited=true, const TfToken instanceName=TfToken());
+{% else %}
+    GetSchemaRelationshipNames(bool includeInherited=true);
+{% endif %}
+
+{% endif %}
 {% if cls.isMultipleApply %}
     /// Return a vector of names of all pre-declared attributes for this schema
     /// class and all its ancestor classes for a given instance name.  Does not

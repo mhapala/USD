@@ -306,7 +306,7 @@ UsdRelationship
 
 {% endif %}
 {% endfor %}
-{% if cls.attrOrder|length > 0 %}
+{% if cls.attrOrder|length > 0 or cls.relOrder|length > 0 %}
 namespace {
 static inline TfTokenVector
 {% if cls.isMultipleApply %}
@@ -380,6 +380,54 @@ const TfTokenVector&
     else
         return localNames;
 }
+{% if cls.relOrder|length > 0 %}
+const TfTokenVector&
+{% if cls.isMultipleApply %}
+{{ cls.cppClassName }}::GetSchemaRelationshipNames(
+    bool includeInherited, const TfToken instanceName)
+{% else %}
+{{ cls.cppClassName }}::GetSchemaRelationshipNames(bool includeInherited)
+{% endif %}
+{
+{% if cls.relOrder|length > 0 %}
+    static TfTokenVector localNames = {
+{% for relName in cls.relOrder %}
+{% set rel = cls.rels[relName] %}
+        {{ tokensPrefix }}Tokens->{{ rel.name }},
+{% endfor %}
+    };
+{% if cls.isMultipleApply %}
+    static TfTokenVector allNames =
+        _ConcatenateAttributeNames(
+            instanceName,
+{# The schema generator has already validated whether our parent is #}
+{# a multiple apply schema or UsdSchemaBaseAPI, choose the correct function #}
+{# depending on the situation #}
+{% if cls.parentCppClassName == "UsdAPISchemaBase" %}
+            {{ cls.parentCppClassName }}::GetSchemaRelationshipNames(true),
+{% else %}
+            {{ cls.parentCppClassName }}::GetSchemaRelationshipNames(true, instanceName),
+{% endif %}
+            localNames);
+{% else %}
+    static TfTokenVector allNames =
+        _ConcatenateAttributeNames(
+            {{ cls.parentCppClassName }}::GetSchemaRelationshipNames(true),
+            localNames);
+{% endif %}
+{% else %}
+    static TfTokenVector localNames;
+    static TfTokenVector allNames =
+        {{ cls.parentCppClassName }}::GetSchemaRelationshipNames(true);
+{% endif %}
+
+    if (includeInherited)
+        return allNames;
+    else
+        return localNames;
+}
+
+{% endif %}
 
 {% if useExportAPI %}
 {{ namespaceClose }}

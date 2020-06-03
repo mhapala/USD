@@ -151,6 +151,14 @@ public:
         return names;
     }
 
+    static const TfTokenVector &
+    GetSchemaRelationshipNames(bool includeInherited=true)
+    {
+        /* This only exists for consistency */
+        static TfTokenVector names;
+        return names;
+    }
+
     /// Return true if this schema object is compatible with its held prim,
     /// false otherwise.  For untyped schemas return true if the held prim is
     /// not expired, otherwise return false.  For typed schemas return true if

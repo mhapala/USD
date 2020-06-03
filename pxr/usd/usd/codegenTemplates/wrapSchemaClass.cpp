@@ -141,6 +141,17 @@ void wrap{{ cls.cppClassName }}()
              return_value_policy<TfPySequenceToList>())
         .staticmethod("GetSchemaAttributeNames")
 
+{% if cls.relOrder|length > 0 %}
+        .def("GetSchemaRelationshipNames",
+             &This::GetSchemaRelationshipNames,
+             arg("includeInherited")=true,
+{% if cls.isMultipleApply %}
+             arg("instanceName")=TfToken(),
+{% endif %}
+             return_value_policy<TfPySequenceToList>())
+        .staticmethod("GetSchemaRelationshipNames")
+
+{% endif %}
         .def("_GetStaticTfType", (TfType const &(*)()) TfType::Find<This>,
              return_value_policy<return_by_value>())
         .staticmethod("_GetStaticTfType")
